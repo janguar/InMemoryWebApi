@@ -1,3 +1,4 @@
+using InMemoryWebApi.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace InMemoryWebApi
 		public void ConfigureServices(IServiceCollection services)
 		{
 
-			services.AddDbContext<DatabaseContext>(opt => opt.UseInMemoryDatabase("FakeDatabase"));
+			services.AddDbContext<DatabaseContext>(); //opt => opt.UseInMemoryDatabase("FakeDatabase")
 
 			services.AddControllers();
 			services.AddSwaggerGen(c =>
