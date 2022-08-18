@@ -1,107 +1,108 @@
-﻿using InMemoryWebApi.Context;
-using InMemoryWebApi.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using InMemoryWebApi.Context;
+using InMemoryWebApi.Models;
 
 namespace InMemoryWebApi.Controllers
 {
     [Route("api/[controller]")]
-	[ApiController]
-	public class BooksController : ControllerBase
-	{
-		private readonly DatabaseContext _context;
+    [ApiController]
+    public class BooksController : ControllerBase
+    {
+        private readonly DatabaseContext _context;
 
-		public BooksController(DatabaseContext context)
-		{
-			_context = context;
-		}
+        public BooksController(DatabaseContext context)
+        {
+            _context = context;
+        }
 
-		// GET: api/Books
-		[HttpGet]
-		public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
-		{
-			var result = await _context.Books.ToListAsync();
-			return result;
-		}
+        // GET: api/Books
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BookEntity>>> GetBookEntities()
+        {
+            return await _context.BookEntities.ToListAsync();
+        }
 
-		// GET: api/Books/5
-		[HttpGet("{id}")]
-		public async Task<ActionResult<Book>> GetBook(long id)
-		{
-			var book = await _context.Books.FindAsync(id);
+        // GET: api/Books/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookEntity>> GetBookEntity(int id)
+        {
+            var bookEntity = await _context.BookEntities.FindAsync(id);
 
-			if (book == null)
-			{
-				return NotFound();
-			}
+            if (bookEntity == null)
+            {
+                return NotFound();
+            }
 
-			return book;
-		}
+            return bookEntity;
+        }
 
-		// PUT: api/Books/5
-		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPut("{id}")]
-		public async Task<IActionResult> PutBook(long id, Book book)
-		{
-			if (id != book.Id)
-			{
-				return BadRequest();
-			}
+        // PUT: api/Books/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBookEntity(int id, BookEntity bookEntity)
+        {
+            if (id != bookEntity.Id)
+            {
+                return BadRequest();
+            }
 
-			_context.Entry(book).State = EntityState.Modified;
+            _context.Entry(bookEntity).State = EntityState.Modified;
 
-			try
-			{
-				await _context.SaveChangesAsync();
-			}
-			catch (DbUpdateConcurrencyException)
-			{
-				if (!BookExists(id))
-				{
-					return NotFound();
-				}
-				else
-				{
-					throw;
-				}
-			}
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BookEntityExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-			return NoContent();
-		}
+            return NoContent();
+        }
 
-		// POST: api/Books
-		// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-		[HttpPost]
-		public async Task<ActionResult<Book>> PostBook(Book book)
-		{
-			_context.Books.Add(book);
-			await _context.SaveChangesAsync();
+        // POST: api/Books
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<BookEntity>> PostBookEntity(BookEntity bookEntity)
+        {
+            _context.BookEntities.Add(bookEntity);
+            await _context.SaveChangesAsync();
 
-			return CreatedAtAction("GetBook", new { id = book.Id }, book);
-		}
+            return CreatedAtAction("GetBookEntity", new { id = bookEntity.Id }, bookEntity);
+        }
 
-		// DELETE: api/Books/5
-		[HttpDelete("{id}")]
-		public async Task<IActionResult> DeleteBook(long id)
-		{
-			var book = await _context.Books.FindAsync(id);
-			if (book == null)
-			{
-				return NotFound();
-			}
+        // DELETE: api/Books/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBookEntity(int id)
+        {
+            var bookEntity = await _context.BookEntities.FindAsync(id);
+            if (bookEntity == null)
+            {
+                return NotFound();
+            }
 
-			_context.Books.Remove(book);
-			await _context.SaveChangesAsync();
+            _context.BookEntities.Remove(bookEntity);
+            await _context.SaveChangesAsync();
 
-			return NoContent();
-		}
+            return NoContent();
+        }
 
-		private bool BookExists(long id)
-		{
-			return _context.Books.Any(e => e.Id == id);
-		}
-	}
+        private bool BookEntityExists(int id)
+        {
+            return _context.BookEntities.Any(e => e.Id == id);
+        }
+    }
 }

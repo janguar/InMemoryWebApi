@@ -1,7 +1,6 @@
 using InMemoryWebApi.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +20,7 @@ namespace InMemoryWebApi
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddCors();
 
 			services.AddDbContext<DatabaseContext>(); //opt => opt.UseInMemoryDatabase("FakeDatabase")
 
@@ -44,6 +44,13 @@ namespace InMemoryWebApi
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
+
+			// global cors policy
+			app.UseCors(x => x
+				.AllowAnyMethod()
+				.AllowAnyHeader()
+				.SetIsOriginAllowed(origin => true) // allow any origin
+				.AllowCredentials()); // allow credentials
 
 			app.UseAuthorization();
 
